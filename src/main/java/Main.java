@@ -2,6 +2,7 @@ import java.io.*;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import game.Game;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -9,7 +10,6 @@ import org.json.simple.parser.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 import static serverCommunication.HttpRequests.*;
 
@@ -21,6 +21,8 @@ public class Main {
       String myColor = String.valueOf(dataConnect.get("color"));
       String myToken = String.valueOf(dataConnect.get("token"));
       System.out.println("Color: " + myColor + " & Token: " + myToken);
+
+      Game game = new Game(myColor);
 
       try{
          Thread.sleep(3000);
@@ -36,15 +38,14 @@ public class Main {
          JSONObject info = getGameInfo();
          isFinished = (boolean) info.get("is_finished");
 
-
          if (myColor.equals(info.get("whose_turn"))){
-
+            game.parseBoard(info);
             move(myToken, moves);
 
          }
 
          try{
-            Thread.sleep(3000);
+            Thread.sleep(1000);
          }catch(InterruptedException e){
             System.out.println(e);
          }

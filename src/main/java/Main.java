@@ -3,11 +3,14 @@ import java.io.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import game.Game;
+import game.Move;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,8 +42,16 @@ public class Main {
          isFinished = (boolean) info.get("is_finished");
 
          if (myColor.equals(info.get("whose_turn"))){
-            game.parseBoard(info);
-            move(myToken, moves);
+//            game.parseBoard((JSONObject) info.get("board"));
+            JSONParser parser = new JSONParser();
+            game.parseBoard((JSONArray) parser.parse(String.valueOf(info.get("board"))));
+
+            move(myToken, game.getMove());
+            ArrayList<Move> moves1 = game.possibleMoves(2,1);
+            ArrayList<Move> moves2 = game.possibleMoves(7,0);
+
+            System.out.println(moves1);
+            System.out.println(moves2);
 
          }
 
@@ -50,8 +61,6 @@ public class Main {
             System.out.println(e);
          }
       }
-
-
    }
 
    public static JSONObject getGameInfo() throws ParseException {

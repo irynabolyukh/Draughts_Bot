@@ -106,6 +106,7 @@ public class Game {
             }
             if (c == column && row % 2 == 1 && c + 1 < 4 && r + 1 < 8 && DASHBOARD[r + 1][c + 1].color == Draught.Color.NONE) {
                 return new Move(positions[row][column], positions[r + 1][c + 1], 2, r + 1, c + 1);
+            }
 //            } else if (r + 1 < 8 && DASHBOARD[r + 1][c].color == Draught.Color.NONE) {
 //                return new Move(positions[row][column], positions[r + 1][c], 2, r + 1, c);
 //            }

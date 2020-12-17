@@ -54,11 +54,55 @@ public class Game {
     private ArrayList<Move> checkCaptures(int row, int column){
         ArrayList<Move> moves = new ArrayList<>();
         Draught.Color color = DASHBOARD[row][column].color;
+        ArrayList<Move> possibleMoves = possibleMoves(row, column);
+        for (Move move:
+                possibleMoves) {
+           if(DASHBOARD[move.getToRow()][move.getToColumn()].color != color){
+
+           }
+
+        }
 
 
 
         return moves;
     }
+
+    public Move checkToCapture(Move move, int row, int column){
+        int r = move.getToRow();
+        int c = move.getToColumn();
+        if(r > row){
+           if(c == column && row%2 == 0){
+               if( c-1 > -1 && r+1 < 8 && DASHBOARD[r+1][c-1].color == Draught.Color.NONE){
+                   return new Move(positions[row][column], positions[r+1][c-1],2,r+1,c-1);
+               }
+           }if(c == column && row%2 == 1){
+               if(c + 1 < 4 && r+1 < 8 && DASHBOARD[r+1][c+1].color == Draught.Color.NONE){
+                   return new Move(positions[row][column], positions[r+1][c+1],2,r+1,c+1);
+               }
+            }else{
+                if(r+1 < 8 && DASHBOARD[r+1][c].color == Draught.Color.NONE){
+                    return new Move(positions[row][column], positions[r+1][c],2,r+1,c);
+                }
+            }
+        }else {
+            if (c == column && row % 2 == 0) {
+                if (c - 1 > -1 && r - 1 > -1 && DASHBOARD[r - 1][c - 1].color == Draught.Color.NONE) {
+                    return new Move(positions[row][column], positions[r - 1][c - 1], 2, r - 1, c - 1);
+                }
+            }
+            if (c == column && row % 2 == 1) {
+                if (c + 1 < 4 && r - 1 > -1 && DASHBOARD[r - 1][c + 1].color == Draught.Color.NONE) {
+                    return new Move(positions[row][column], positions[r - 1][c + 1], 2, r - 1, c + 1);
+                }
+            } else {
+                if (r + 1 < 8 && DASHBOARD[r + 1][c].color == Draught.Color.NONE) {
+                    return new Move(positions[row][column], positions[r + 1][c], 2, r + 1, c);
+                }
+            }
+        }
+    }
+
 
     public ArrayList<Move> possibleMoves(int row, int column){
         ArrayList<Move> moves = new ArrayList<>();
@@ -76,30 +120,30 @@ public class Game {
 
         if(DASHBOARD[row][column].king){
             if(r1 < 8){
-                moves.add(new Move(positions[row][column], positions[r1][column], 1));
+                moves.add(new Move(positions[row][column], positions[r1][column], 1, r1, column));
                 if(c2 > -1 && c2 < 4){
-                    moves.add(new Move(positions[row][column], positions[r1][c2], 1));
+                    moves.add(new Move(positions[row][column], positions[r1][c2], 1, r1,c2));
                 }
             }
             if(r2 > -1){
-                moves.add(new Move(positions[row][column], positions[r2][column], 1));
+                moves.add(new Move(positions[row][column], positions[r2][column], 1, r2, column));
                 if(c2 > -1 && c2 < 4){
-                    moves.add(new Move(positions[row][column], positions[r2][c2], 1));
+                    moves.add(new Move(positions[row][column], positions[r2][c2], 1, r2, c2));
                 }
             }
         }else{
             if(color== Draught.Color.RED){
                 if(r1 < 8){
-                    moves.add(new Move(positions[row][column], positions[r1][column], 1));
+                    moves.add(new Move(positions[row][column], positions[r1][column], 1, r1, column));
                     if(c2 > -1 && c2 < 4){
-                        moves.add(new Move(positions[row][column], positions[r1][c2], 1));
+                        moves.add(new Move(positions[row][column], positions[r1][c2], 1, r1, c2));
                     }
                 }
             }else{
                 if(r2 > -1){
-                    moves.add(new Move(positions[row][column], positions[r2][column], 1));
+                    moves.add(new Move(positions[row][column], positions[r2][column], 1, r2, column));
                     if(c2 > -1 && c2 < 4){
-                        moves.add(new Move(positions[row][column], positions[r2][c2], 1));
+                        moves.add(new Move(positions[row][column], positions[r2][c2], 1, r2, c2));
                     }
                 }
             }

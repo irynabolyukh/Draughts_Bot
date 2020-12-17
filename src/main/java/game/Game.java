@@ -5,6 +5,7 @@ import org.json.simple.JSONObject;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.stream.Collectors;
 
 import org.json.simple.JSONArray;
 
@@ -28,7 +29,7 @@ public class Game {
             {17, 18, 19, 20},
             {21, 22, 23, 24},
             {25, 26, 27, 28},
-            {29, 330, 31, 32}};
+            {29, 30, 31, 32}};
 
     Draught.Color MY_COLOR;
     Draught.Color THEIR_COLOR;
@@ -46,25 +47,54 @@ public class Game {
 
     public ArrayList<Integer> getMove() {
         ArrayList<Integer> list = new ArrayList<>();
-        list.add(21);
-        list.add(17);
+        ArrayList<Move> allMoves = new ArrayList<>();
+//        list.add(21);
+//        list.add(17);
+        ArrayList<Move> captures = new ArrayList<>();
+        for(int i = 0; i < 8; i++){
+            for(int j = 0; j < 4; j++){
+                if(DASHBOARD[i][j].color == MY_COLOR){
+                    captures.addAll(checkCaptures(i,j));
+                }
+            }
+        }
+
+        if(captures.size() > 0){
+            captures.sort(null);
+            list.add(captures.get(0).getFrom());
+            list.add(captures.get(0).getTo());
+        }
+        else{
+            for(int i = 0; i < 8; i++){
+                for(int j = 0; j < 4; j++){
+                    if(DASHBOARD[i][j].color == MY_COLOR){
+                        allMoves.addAll(moveWherever(i,j));
+                    }
+                }
+            }
+            System.out.println(allMoves);
+            list.add(allMoves.get(0).getFrom());
+            list.add(allMoves.get(0).getTo());
+        }
+
+        System.out.println("MOOOVEEE "+list.get(0) +" " + list.get(1));
         return list;
     }
 
     private ArrayList<Move> checkCaptures(int row, int column) {
-        ArrayList<Move> moves = new ArrayList<>();
+        ArrayList<Move> captureMoves = new ArrayList<>();
         Draught.Color color = DASHBOARD[row][column].color;
         ArrayList<Move> possibleMoves = possibleMoves(row, column);
-        for (Move move :
-                possibleMoves) {
-            if (DASHBOARD[move.getToRow()][move.getToColumn()].color != color) {
+        for (Move move : possibleMoves) {
+            if (DASHBOARD[move.getToRow()][move.getToColumn()].color != color
+                    && DASHBOARD[move.getToRow()][move.getToColumn()].color != Draught.Color.NONE) {
                 Move toCapture = checkToCapture(move, row, column);
                 if(toCapture != null){
-                    moves.add(toCapture);
+                    captureMoves.add(toCapture);
                 }
             }
         }
-        return moves;
+        return captureMoves;
     }
 
     public Move checkToCapture(Move move, int row, int column) {
@@ -73,31 +103,32 @@ public class Game {
         if (r > row) {
             if (c == column && row % 2 == 0 && c - 1 > -1 && r + 1 < 8 && DASHBOARD[r + 1][c - 1].color == Draught.Color.NONE) {
                 return new Move(positions[row][column], positions[r + 1][c - 1], 2, r + 1, c - 1);
-
             }
             if (c == column && row % 2 == 1 && c + 1 < 4 && r + 1 < 8 && DASHBOARD[r + 1][c + 1].color == Draught.Color.NONE) {
                 return new Move(positions[row][column], positions[r + 1][c + 1], 2, r + 1, c + 1);
-
-            } else if (r + 1 < 8 && DASHBOARD[r + 1][c].color == Draught.Color.NONE) {
+//            } else if (r + 1 < 8 && DASHBOARD[r + 1][c].color == Draught.Color.NONE) {
+//                return new Move(positions[row][column], positions[r + 1][c], 2, r + 1, c);
+//            }
+            if (c>column && r + 1 < 8 && DASHBOARD[r + 1][c].color == Draught.Color.NONE) {
                 return new Move(positions[row][column], positions[r + 1][c], 2, r + 1, c);
-
+            }if (c<column && r + 1 < 8 && DASHBOARD[r + 1][c+1].color == Draught.Color.NONE) {
+                return new Move(positions[row][column], positions[r + 1][c+1], 2, r + 1, c+1);
             }
         } else {
             if (c == column && row % 2 == 0 && c - 1 > -1 && r - 1 > -1 && DASHBOARD[r - 1][c - 1].color == Draught.Color.NONE) {
                 return new Move(positions[row][column], positions[r - 1][c - 1], 2, r - 1, c - 1);
-
             }
             if (c == column && row % 2 == 1 && c + 1 < 4 && r - 1 > -1 && DASHBOARD[r - 1][c + 1].color == Draught.Color.NONE) {
                 return new Move(positions[row][column], positions[r - 1][c + 1], 2, r - 1, c + 1);
 
-            } else if (r + 1 < 8 && DASHBOARD[r + 1][c].color == Draught.Color.NONE) {
-                return new Move(positions[row][column], positions[r + 1][c], 2, r + 1, c);
-
+            }if (c>column && r - 1 > -1 && DASHBOARD[r - 1][c].color == Draught.Color.NONE) {
+                return new Move(positions[row][column], positions[r - 1][c], 2, r - 1, c);
+            }if (c<column && r - 1 > -1 && DASHBOARD[r - 1][c+1].color == Draught.Color.NONE) {
+                return new Move(positions[row][column], positions[r - 1][c+1], 2, r - 1, c+1);
             }
         }
         return null;
     }
-
 
     public ArrayList<Move> possibleMoves(int row, int column) {
         ArrayList<Move> moves = new ArrayList<>();
@@ -146,6 +177,16 @@ public class Game {
         return moves;
     }
 
+    public ArrayList<Move> moveWherever(int row, int column) {
+        ArrayList<Move> possible = possibleMoves(row,column);
+
+//        System.out.println(possible);
+
+        return (ArrayList<Move>) possible.stream()
+                .filter(x-> DASHBOARD[x.getToRow()][x.getToColumn()].color == Draught.Color.NONE)
+                .collect(Collectors.toList());
+    }
+
     public void parseBoard(JSONArray board) {
 
         for (int i = 0; i < 8; i++) {
@@ -167,8 +208,5 @@ public class Game {
             DASHBOARD[(int) row][(int) column] = color.equals("RED") ? new Draught(Draught.Color.RED, king) : new Draught(Draught.Color.BLACK, king);
         }
 
-        for (int i = 0; i < 8; i++) {
-            System.out.println(Arrays.toString(DASHBOARD[i]));
-        }
     }
 }

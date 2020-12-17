@@ -1,6 +1,6 @@
 package game;
 
-public class Move {
+public class Move implements Comparable{
 
     int from, to, heuristic, toRow, toColumn;
 
@@ -59,5 +59,11 @@ public class Move {
                 ", to=" + to +
                 ", heuristic=" + heuristic +
                 '}';
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        Move move = (Move) o;
+        return this.heuristic - move.getHeuristic();
     }
 }

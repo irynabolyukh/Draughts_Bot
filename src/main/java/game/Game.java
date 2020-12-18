@@ -35,13 +35,12 @@ public class Game {
     Draught.Color THEIR_COLOR;
 
     public Game(String myColor) {
-        switch (myColor) {
-            case "RED":
-                this.MY_COLOR = Draught.Color.RED;
-                this.THEIR_COLOR = Draught.Color.BLACK;
-            default:
-                this.MY_COLOR = Draught.Color.BLACK;
-                this.THEIR_COLOR = Draught.Color.RED;
+        if(myColor.equals("BLACK")) {
+            this.MY_COLOR = Draught.Color.BLACK;
+            this.THEIR_COLOR = Draught.Color.RED;
+        }else{
+            this.MY_COLOR = Draught.Color.RED;
+            this.THEIR_COLOR = Draught.Color.BLACK;
         }
     }
 

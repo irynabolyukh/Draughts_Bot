@@ -5,6 +5,7 @@ import org.json.simple.JSONObject;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 import org.json.simple.JSONArray;
@@ -72,8 +73,14 @@ public class Game {
                 }
             }
             System.out.println(allMoves);
-            list.add(allMoves.get(0).getFrom());
-            list.add(allMoves.get(0).getTo());
+            if(allMoves.size() > 0){
+                Random rand = new Random();
+                int n = rand.nextInt(allMoves.size());
+                list.add(allMoves.get(n).getFrom());
+                list.add(allMoves.get(n).getTo());
+            }else{
+                return list;
+            }
         }
 
         System.out.println("MOOOVEEE "+list.get(0) +" " + list.get(1));

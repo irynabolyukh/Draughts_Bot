@@ -41,18 +41,15 @@ public class Main {
          JSONObject info = getGameInfo();
          isFinished = (boolean) info.get("is_finished");
 
-         if (!isFinished && myColor.equals(info.get("whose_turn"))){
-//            game.parseBoard((JSONObject) info.get("board"));
+         if (myColor.equals(info.get("whose_turn"))){
             JSONParser parser = new JSONParser();
             game.parseBoard((JSONArray) parser.parse(String.valueOf(info.get("board"))));
 
-            move(myToken, game.getMove());
-            ArrayList<Move> moves1 = game.possibleMoves(2,1);
-            ArrayList<Move> moves2 = game.possibleMoves(7,0);
+            ArrayList<Integer> move = game.getMove();
 
-            System.out.println(moves1);
-            System.out.println(moves2);
-
+            if(move.size()>0){
+               move(myToken, move);
+            }
          }
 
          try{

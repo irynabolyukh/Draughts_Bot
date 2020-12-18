@@ -82,6 +82,7 @@ public class Game {
         }
 
         System.out.println("MOVE "+list);
+
         return list;
     }
 

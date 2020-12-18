@@ -78,12 +78,10 @@ public class Game {
                 int n = rand.nextInt(allMoves.size());
                 list.add(allMoves.get(n).getFrom());
                 list.add(allMoves.get(n).getTo());
-            }else{
-                return list;
             }
         }
 
-        System.out.println("MOOOVEEE "+list.get(0) +" " + list.get(1));
+        System.out.println("MOVE "+list);
         return list;
     }
 

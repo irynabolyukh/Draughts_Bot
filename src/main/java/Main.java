@@ -41,7 +41,7 @@ public class Main {
          JSONObject info = getGameInfo();
          isFinished = (boolean) info.get("is_finished");
 
-         if (myColor.equals(info.get("whose_turn"))){
+         if (!isFinished && myColor.equals(info.get("whose_turn"))){
 //            game.parseBoard((JSONObject) info.get("board"));
             JSONParser parser = new JSONParser();
             game.parseBoard((JSONArray) parser.parse(String.valueOf(info.get("board"))));
@@ -56,7 +56,7 @@ public class Main {
          }
 
          try{
-            Thread.sleep(1000);
+            Thread.sleep(4000);
          }catch(InterruptedException e){
             System.out.println(e);
          }

@@ -55,7 +55,7 @@ public class Game {
         ArrayList<Move> captures = new ArrayList<>();
 
         if(isLastMoveMine){
-            captures.addAll(checkCaptures(lastPosition[0],lastPosition[1]));
+            captures.addAll(checkCaptures(lastPosition[0],lastPosition[1], DASHBOARD));
             list.add(captures.get(0).getFrom());
             list.add(captures.get(0).getTo());
 
@@ -67,7 +67,7 @@ public class Game {
         for(int i = 0; i < 8; i++){
             for(int j = 0; j < 4; j++){
                 if(DASHBOARD[i][j].getColor() == MY_COLOR){
-                    captures.addAll(checkCaptures(i,j));
+                    captures.addAll(checkCaptures(i,j, DASHBOARD));
                 }
             }
         }
@@ -139,21 +139,21 @@ public class Game {
         for(int i = 0; i < 8; i++){
             for(int j = 0; j < 4; j++){
                 if(updatedBoard[i][j].getColor() == THEIR_COLOR){
-                    possibleLosses += checkCaptures(i,j).size();
+                    possibleLosses += checkCaptures(i, j, updatedBoard).size();
                 }
             }
         }
         return possibleLosses;
     }
 
-    private ArrayList<Move> checkCaptures(int row, int column) {
+    private ArrayList<Move> checkCaptures(int row, int column, Draught[][] dashboard) {
         ArrayList<Move> captureMoves = new ArrayList<>();
-        Draught.Color color = DASHBOARD[row][column].getColor();
+        Draught.Color color = dashboard[row][column].getColor();
         ArrayList<Move> possibleMoves = possibleMoves(row, column);
         for (Move move : possibleMoves) {
-            if (DASHBOARD[move.getToRow()][move.getToColumn()].getColor() != color
-                    && DASHBOARD[move.getToRow()][move.getToColumn()].getColor() != Draught.Color.NONE) {
-                Move toCapture = checkToCapture(move, row, column);
+            if (dashboard[move.getToRow()][move.getToColumn()].getColor() != color
+                    && dashboard[move.getToRow()][move.getToColumn()].getColor() != Draught.Color.NONE) {
+                Move toCapture = checkToCapture(move, row, column, dashboard);
                 if(toCapture != null){
                     toCapture.setHeuristic(toCapture.getHeuristic()-getPossibleLosses(toCapture.getFrom(), toCapture.getTo()));
                     captureMoves.add(toCapture);
@@ -163,34 +163,34 @@ public class Game {
         return captureMoves;
     }
 
-    public Move checkToCapture(Move move, int row, int column) {
+    public Move checkToCapture(Move move, int row, int column, Draught[][] dashboard) {
         int r = move.getToRow();
         int c = move.getToColumn();
         if (r > row) {
-            if (c == column && row % 2 == 0 && c - 1 > -1 && r + 1 < 8 && DASHBOARD[r + 1][c - 1].getColor() == Draught.Color.NONE) {
+            if (c == column && row % 2 == 0 && c - 1 > -1 && r + 1 < 8 && dashboard[r + 1][c - 1].getColor() == Draught.Color.NONE) {
                 return new Move(positions[row][column], positions[r + 1][c - 1], 2, r + 1, c - 1);
             }
-            if (c == column && row % 2 == 1 && c + 1 < 4 && r + 1 < 8 && DASHBOARD[r + 1][c + 1].getColor() == Draught.Color.NONE) {
+            if (c == column && row % 2 == 1 && c + 1 < 4 && r + 1 < 8 && dashboard[r + 1][c + 1].getColor() == Draught.Color.NONE) {
                 return new Move(positions[row][column], positions[r + 1][c + 1], 2, r + 1, c + 1);
             }
 //            } else if (r + 1 < 8 && DASHBOARD[r + 1][c].color == Draught.Color.NONE) {
 //                return new Move(positions[row][column], positions[r + 1][c], 2, r + 1, c);
 //            }
-            if (c>column && r + 1 < 8 && DASHBOARD[r + 1][c].getColor() == Draught.Color.NONE) {
+            if (c>column && r + 1 < 8 && dashboard[r + 1][c].getColor() == Draught.Color.NONE) {
                 return new Move(positions[row][column], positions[r + 1][c], 2, r + 1, c);
-            }if (c<column && r + 1 < 8 && DASHBOARD[r + 1][c].getColor() == Draught.Color.NONE) {
+            }if (c<column && r + 1 < 8 && dashboard[r + 1][c].getColor() == Draught.Color.NONE) {
                 return new Move(positions[row][column], positions[r + 1][c], 2, r + 1, c);
             }
         } else {
-            if (c == column && row % 2 == 0 && c - 1 > -1 && r - 1 > -1 && DASHBOARD[r - 1][c - 1].getColor() == Draught.Color.NONE) {
+            if (c == column && row % 2 == 0 && c - 1 > -1 && r - 1 > -1 && dashboard[r - 1][c - 1].getColor() == Draught.Color.NONE) {
                 return new Move(positions[row][column], positions[r - 1][c - 1], 2, r - 1, c - 1);
             }
-            if (c == column && row % 2 == 1 && c + 1 < 4 && r - 1 > -1 && DASHBOARD[r - 1][c + 1].getColor() == Draught.Color.NONE) {
+            if (c == column && row % 2 == 1 && c + 1 < 4 && r - 1 > -1 && dashboard[r - 1][c + 1].getColor() == Draught.Color.NONE) {
                 return new Move(positions[row][column], positions[r - 1][c + 1], 2, r - 1, c + 1);
 
-            }if (c>column && r - 1 > -1 && DASHBOARD[r - 1][c].getColor() == Draught.Color.NONE) {
+            }if (c>column && r - 1 > -1 && dashboard[r - 1][c].getColor() == Draught.Color.NONE) {
                 return new Move(positions[row][column], positions[r - 1][c], 2, r - 1, c);
-            }if (c<column && r - 1 > -1 && DASHBOARD[r - 1][c].getColor() == Draught.Color.NONE) {
+            }if (c<column && r - 1 > -1 && dashboard[r - 1][c].getColor() == Draught.Color.NONE) {
                 return new Move(positions[row][column], positions[r - 1][c], 2, r - 1, c);
             }
         }

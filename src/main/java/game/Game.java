@@ -34,6 +34,8 @@ public class Game {
 
     Draught.Color MY_COLOR;
     Draught.Color THEIR_COLOR;
+    int[] lastPosition = new int[2];
+    boolean isLastMoveMine = false;
 
     public Game(String myColor) {
         if(myColor.equals("BLACK")) {
@@ -51,6 +53,17 @@ public class Game {
 //        list.add(21);
 //        list.add(17);
         ArrayList<Move> captures = new ArrayList<>();
+
+        if(isLastMoveMine){
+            captures.addAll(checkCaptures(lastPosition[0],lastPosition[1]));
+            list.add(captures.get(0).getFrom());
+            list.add(captures.get(0).getTo());
+
+            lastPosition[0] = captures.get(0).getToRow();
+            lastPosition[1] = captures.get(0).getToColumn();
+            return list;
+        }
+
         for(int i = 0; i < 8; i++){
             for(int j = 0; j < 4; j++){
                 if(DASHBOARD[i][j].color == MY_COLOR){
@@ -63,6 +76,9 @@ public class Game {
             captures.sort(null);
             list.add(captures.get(0).getFrom());
             list.add(captures.get(0).getTo());
+
+            lastPosition[0] = captures.get(0).getToRow();
+            lastPosition[1] = captures.get(0).getToColumn();
         }
         else{
             for(int i = 0; i < 8; i++){
@@ -78,10 +94,14 @@ public class Game {
                 int n = rand.nextInt(allMoves.size());
                 list.add(allMoves.get(n).getFrom());
                 list.add(allMoves.get(n).getTo());
+
+                lastPosition[0] = allMoves.get(n).getToRow();
+                lastPosition[1] = allMoves.get(n).getToColumn();
             }
         }
 
         System.out.println("MOVE "+list);
+
 
         return list;
     }
@@ -214,5 +234,11 @@ public class Game {
             DASHBOARD[(int) row][(int) column] = color.equals("RED") ? new Draught(Draught.Color.RED, king) : new Draught(Draught.Color.BLACK, king);
         }
 
+    }
+
+    public void parseLastMove(JSONObject last_move) {
+        String player = String.valueOf(last_move.get("player"));
+
+        isLastMoveMine = player.equals(MY_COLOR.toString());
     }
 }

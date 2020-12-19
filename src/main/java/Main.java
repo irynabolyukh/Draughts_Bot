@@ -50,6 +50,7 @@ public class Main {
          if (myColor.equals(info.get("whose_turn"))){
             JSONParser parser = new JSONParser();
             game.parseBoard((JSONArray) parser.parse(String.valueOf(info.get("board"))));
+            game.parseLastMove((JSONObject) parser.parse(String.valueOf(info.get("last_move"))));
 
             ArrayList<Integer> move = game.getMove();
 

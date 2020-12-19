@@ -117,7 +117,7 @@ public class Game {
 //            }
             if (c>column && r + 1 < 8 && DASHBOARD[r + 1][c].color == Draught.Color.NONE) {
                 return new Move(positions[row][column], positions[r + 1][c], 2, r + 1, c);
-            }if (c<column && r + 1 < 8 && DASHBOARD[r + 1][c+1].color == Draught.Color.NONE) {
+            }if (c<column && r + 1 < 8 && DASHBOARD[r + 1][c].color == Draught.Color.NONE) {
                 return new Move(positions[row][column], positions[r + 1][c], 2, r + 1, c);
             }
         } else {

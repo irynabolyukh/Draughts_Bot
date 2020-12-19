@@ -84,24 +84,24 @@ public class Game {
             for(int i = 0; i < 8; i++){
                 for(int j = 0; j < 4; j++){
                     if(DASHBOARD[i][j].getColor() == MY_COLOR){
-                        allMoves.addAll(moveWherever(i, j, DASHBOARD));
+                        allMoves.addAll(moveWhereverWHeuristic(i, j, DASHBOARD));
                     }
                 }
             }
+            allMoves.sort(null);
             System.out.println(allMoves);
             if(allMoves.size() > 0){
-                Random rand = new Random();
-                int n = rand.nextInt(allMoves.size());
-                list.add(allMoves.get(n).getFrom());
-                list.add(allMoves.get(n).getTo());
+//                Random rand = new Random();
+//                int n = rand.nextInt(allMoves.size());
+                list.add(allMoves.get(0).getFrom());
+                list.add(allMoves.get(0).getTo());
 
-                lastPosition[0] = allMoves.get(n).getToRow();
-                lastPosition[1] = allMoves.get(n).getToColumn();
+                lastPosition[0] = allMoves.get(0).getToRow();
+                lastPosition[1] = allMoves.get(0).getToColumn();
             }
         }
 
         System.out.println("MOVE "+list);
-
 
         return list;
     }
@@ -250,6 +250,18 @@ public class Game {
         return (ArrayList<Move>) possible.stream()
                 .filter(x-> dashboard[x.getToRow()][x.getToColumn()].getColor() == Draught.Color.NONE)
                 .collect(Collectors.toList());
+    }
+
+    public ArrayList<Move> moveWhereverWHeuristic(int row, int column, Draught[][] dashboard) {
+        ArrayList<Move> moves = new ArrayList<>();
+        ArrayList<Move> possibleMoves = possibleMoves(row, column, dashboard);
+        for (Move move : possibleMoves) {
+            if (dashboard[move.getToRow()][move.getToColumn()].getColor() == Draught.Color.NONE) {
+                move.setHeuristic(move.getHeuristic()-getPossibleLosses(move.getFrom(), move.getTo()));
+                moves.add(move);
+            }
+        }
+        return moves;
     }
 
     public void parseBoard(JSONArray board) {

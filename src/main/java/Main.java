@@ -48,11 +48,18 @@ public class Main {
             boolean moveMade = false;
 
             do{
+               JSONObject checkIsFinished = getGameInfo();
+               isFinished = (boolean) checkIsFinished.get("is_finished");
                move = game.getMove();
                if(move.size()>0) {
                   moveMade = move(myToken, move);
                }
-            }while(!moveMade);
+               try{
+                  Thread.sleep(700);
+               }catch(InterruptedException e){
+                  System.out.println(e);
+               }
+            }while(!moveMade && !isFinished);
 
          }
 

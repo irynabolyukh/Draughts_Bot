@@ -33,6 +33,7 @@ public class Game {
     Draught.Color THEIR_COLOR;
     int[] lastPosition = new int[2];
     boolean isLastMoveMine = false;
+    boolean isFirstMove = true;
 
     public Game(String myColor) {
         if(myColor.equals("BLACK")) {
@@ -48,6 +49,19 @@ public class Game {
         ArrayList<Integer> list = new ArrayList<>();
         ArrayList<Move> allMoves = new ArrayList<>();
         ArrayList<Move> captures = new ArrayList<>();
+
+        if(isFirstMove){
+            allMoves.add(new Move(11,15));
+            allMoves.add(new Move(11,16));
+
+            Random rand = new Random();
+            int n = rand.nextInt(allMoves.size());
+
+            list.add(allMoves.get(n).getFrom());
+            list.add(allMoves.get(n).getTo());
+
+            return list;
+        }
 
         if(isLastMoveMine){
             captures.addAll(checkCaptures(lastPosition[0],lastPosition[1], DASHBOARD));
@@ -287,6 +301,10 @@ public class Game {
         if(last_move != null){
             String player = String.valueOf(last_move.get("player"));
             isLastMoveMine = player.equals(MY_COLOR.toString());
+            isFirstMove = false;
+        }
+        else{
+            isFirstMove = true;
         }
     }
 }

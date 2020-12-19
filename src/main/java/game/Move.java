@@ -2,7 +2,7 @@ package game;
 
 public class Move implements Comparable{
 
-    int from, to, heuristic, toRow, toColumn;
+    private int from, to, heuristic, toRow, toColumn;
 
     public Move(int from, int to, int heuristic, int toRow, int toColumn) {
         this.from = from;

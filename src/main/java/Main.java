@@ -33,30 +33,27 @@ public class Main {
          System.out.println(e);
       }
 
-      ArrayList<Integer> moves = new ArrayList<>();
-
       boolean isFinished = false;
 
       while (!isFinished) {
          JSONObject info = getGameInfo();
          isFinished = (boolean) info.get("is_finished");
 
-         try{
-            Thread.sleep(2000);
-         }catch(InterruptedException e){
-            System.out.println(e);
-         }
-
          if (myColor.equals(info.get("whose_turn"))){
             JSONParser parser = new JSONParser();
             game.parseBoard((JSONArray) parser.parse(String.valueOf(info.get("board"))));
             game.parseLastMove((JSONObject) parser.parse(String.valueOf(info.get("last_move"))));
 
-            ArrayList<Integer> move = game.getMove();
+            ArrayList<Integer> move;
+            boolean moveMade = false;
 
-            if(move.size()>0){
-               move(myToken, move);
-            }
+            do{
+               move = game.getMove();
+               if(move.size()>0) {
+                  moveMade = move(myToken, move);
+               }
+            }while(!moveMade);
+
          }
 
          try{
@@ -75,16 +72,20 @@ public class Main {
       return info;
    }
 
-   public static JSONObject connect() throws ParseException {
+   public static JSONObject connect(){
       String connectURL = "http://localhost:8081/game?team_name=";
       String teamName = "red";
       JSONParser parser = new JSONParser();
       JSONObject connectAnswer = connectToGame(connectURL+teamName);
-      JSONObject dataConnect = (JSONObject) parser.parse(String.valueOf(connectAnswer.get("data")));
-      return dataConnect;
+      try {
+         JSONObject dataConnect = (JSONObject) parser.parse(String.valueOf(connectAnswer.get("data")));
+         return dataConnect;
+      }catch (Exception e){
+         throw new RuntimeException("Can't connect");
+      }
    }
 
-   public static String move(String  myToken,  ArrayList<Integer> moves) throws JsonProcessingException {
+   public static boolean move(String  myToken,  ArrayList<Integer> moves) throws JsonProcessingException {
       Map<Object, Object> values = new HashMap<>();
       values.put("move", moves);
       String moveURL = "http://localhost:8081/move";
@@ -92,8 +93,14 @@ public class Main {
       String requestBody = objectMapper.writeValueAsString(values);
 
       JSONObject moveAnswer = makeMove(moveURL, requestBody, myToken);
-      String dataMove = String.valueOf(moveAnswer.get("data"));
 
-      return dataMove;
+      try{
+         moveAnswer.get("data");
+         return true;
+      } catch (Exception e){
+         e.printStackTrace();
+         return false;
+      }
+
    }
 }

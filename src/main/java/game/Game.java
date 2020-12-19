@@ -106,7 +106,7 @@ public class Game {
         return list;
     }
 
-    private int getPossibleLosses(Move move){
+    private int getPossibleLosses(int from, int to){
 
         Draught [][] updatedBoard = new Draught[8][4];
         for(int i = 0; i < 8; i++){
@@ -115,15 +115,18 @@ public class Game {
             }
         }
 
-        int fromRow, fromColumn;
-        fromRow = move.getFrom()/4;
-        fromColumn = move.getFrom()%4==0 ? 3 : move.getFrom()%4 - 1;
+        int fromRow, fromColumn, toRow, toColumn;
+        fromRow = from/4;
+        fromColumn = from%4==0 ? 3 : from%4 - 1;
+        toRow = to/4;
+        toColumn = to%4==0 ? 3 : to%4 - 1;
+
 
         updatedBoard[fromRow][fromColumn] = new Draught(Draught.Color.NONE, false);
-        updatedBoard[move.getToRow()][move.getToColumn()] = new Draught(MY_COLOR, false);
+        updatedBoard[toRow][toColumn] = new Draught(MY_COLOR, false);
 
-        if( Math.abs( (move.getFrom())-(move.getTo())) > 5 ){
-            int removedPosition = (move.getFrom() + move.getTo() + 1)/2;
+        if( Math.abs(from - to) > 5 ){
+            int removedPosition = (from + to + 1)/2;
             int removedRow, removedColumn;
             removedRow = removedPosition/4;
             removedColumn = removedPosition%4==0 ? 3 : removedPosition%4 - 1;
@@ -152,7 +155,7 @@ public class Game {
                     && DASHBOARD[move.getToRow()][move.getToColumn()].getColor() != Draught.Color.NONE) {
                 Move toCapture = checkToCapture(move, row, column);
                 if(toCapture != null){
-                    toCapture.setHeuristic(toCapture.getHeuristic()-getPossibleLosses(toCapture));
+                    toCapture.setHeuristic(toCapture.getHeuristic()-getPossibleLosses(toCapture.getFrom(), toCapture.getTo()));
                     captureMoves.add(toCapture);
                 }
             }
@@ -210,30 +213,30 @@ public class Game {
 
         if (DASHBOARD[row][column].isKing()) {
             if (r1 < 8) {
-                moves.add(new Move(positions[row][column], positions[r1][column], 1, r1, column));
+                moves.add(new Move(positions[row][column], positions[r1][column], 1+getPossibleLosses(positions[row][column], positions[r1][column]), r1, column));
                 if (c2 > -1 && c2 < 4) {
-                    moves.add(new Move(positions[row][column], positions[r1][c2], 1, r1, c2));
+                    moves.add(new Move(positions[row][column], positions[r1][c2], 1+getPossibleLosses(positions[row][column], positions[r1][c2]), r1, c2));
                 }
             }
             if (r2 > -1) {
-                moves.add(new Move(positions[row][column], positions[r2][column], 1, r2, column));
+                moves.add(new Move(positions[row][column], positions[r2][column], 1+getPossibleLosses(positions[row][column], positions[r2][column]), r2, column));
                 if (c2 > -1 && c2 < 4) {
-                    moves.add(new Move(positions[row][column], positions[r2][c2], 1, r2, c2));
+                    moves.add(new Move(positions[row][column], positions[r2][c2], 1+getPossibleLosses(positions[row][column], positions[r2][c2]), r2, c2));
                 }
             }
         } else {
             if (color == Draught.Color.RED) {
                 if (r1 < 8) {
-                    moves.add(new Move(positions[row][column], positions[r1][column], 1, r1, column));
+                    moves.add(new Move(positions[row][column], positions[r1][column], 1+getPossibleLosses(positions[row][column], positions[r1][column]), r1, column));
                     if (c2 > -1 && c2 < 4) {
-                        moves.add(new Move(positions[row][column], positions[r1][c2], 1, r1, c2));
+                        moves.add(new Move(positions[row][column], positions[r1][c2], 1+getPossibleLosses(positions[row][column], positions[r1][c2]), r1, c2));
                     }
                 }
             } else {
                 if (r2 > -1) {
-                    moves.add(new Move(positions[row][column], positions[r2][column], 1, r2, column));
+                    moves.add(new Move(positions[row][column], positions[r2][column], 1+getPossibleLosses(positions[row][column], positions[r2][column]), r2, column));
                     if (c2 > -1 && c2 < 4) {
-                        moves.add(new Move(positions[row][column], positions[r2][c2], 1, r2, c2));
+                        moves.add(new Move(positions[row][column], positions[r2][c2], 1+getPossibleLosses(positions[row][column], positions[r2][c2]), r2, c2));
                     }
                 }
             }

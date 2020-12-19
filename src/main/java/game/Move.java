@@ -4,6 +4,11 @@ public class Move implements Comparable{
 
     private int from, to, heuristic, toRow, toColumn;
 
+    public Move(int from, int to) {
+        this.from = from;
+        this.to = to;
+    }
+
     public Move(int from, int to, int heuristic, int toRow, int toColumn) {
         this.from = from;
         this.to = to;

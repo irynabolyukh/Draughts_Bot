@@ -76,7 +76,7 @@ public class Main {
 
    public static JSONObject connect() throws ParseException {
       String connectURL = "http://localhost:8081/game?team_name=";
-      String teamName = "Black";
+      String teamName = "red";
       JSONParser parser = new JSONParser();
       JSONObject connectAnswer = connectToGame(connectURL+teamName);
       JSONObject dataConnect = (JSONObject) parser.parse(String.valueOf(connectAnswer.get("data")));

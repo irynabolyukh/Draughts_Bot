@@ -84,7 +84,7 @@ public class Game {
             for(int i = 0; i < 8; i++){
                 for(int j = 0; j < 4; j++){
                     if(DASHBOARD[i][j].getColor() == MY_COLOR){
-                        allMoves.addAll(moveWherever(i,j));
+                        allMoves.addAll(moveWherever(i, j, DASHBOARD));
                     }
                 }
             }
@@ -149,7 +149,7 @@ public class Game {
     private ArrayList<Move> checkCaptures(int row, int column, Draught[][] dashboard) {
         ArrayList<Move> captureMoves = new ArrayList<>();
         Draught.Color color = dashboard[row][column].getColor();
-        ArrayList<Move> possibleMoves = possibleMoves(row, column);
+        ArrayList<Move> possibleMoves = possibleMoves(row, column, dashboard);
         for (Move move : possibleMoves) {
             if (dashboard[move.getToRow()][move.getToColumn()].getColor() != color
                     && dashboard[move.getToRow()][move.getToColumn()].getColor() != Draught.Color.NONE) {
@@ -197,9 +197,9 @@ public class Game {
         return null;
     }
 
-    public ArrayList<Move> possibleMoves(int row, int column) {
+    public ArrayList<Move> possibleMoves(int row, int column, Draught[][] dashboard) {
         ArrayList<Move> moves = new ArrayList<>();
-        Draught.Color color = DASHBOARD[row][column].getColor();
+        Draught.Color color = dashboard[row][column].getColor();
 
         int r1, r2, c2;
         r1 = row + 1;
@@ -211,7 +211,7 @@ public class Game {
             c2 = column + 1;
         }
 
-        if (DASHBOARD[row][column].isKing()) {
+        if (dashboard[row][column].isKing()) {
             if (r1 < 8) {
                 moves.add(new Move(positions[row][column], positions[r1][column], 1+getPossibleLosses(positions[row][column], positions[r1][column]), r1, column));
                 if (c2 > -1 && c2 < 4) {
@@ -244,13 +244,11 @@ public class Game {
         return moves;
     }
 
-    public ArrayList<Move> moveWherever(int row, int column) {
-        ArrayList<Move> possible = possibleMoves(row,column);
-
-//        System.out.println(possible);
+    public ArrayList<Move> moveWherever(int row, int column, Draught[][] dashboard) {
+        ArrayList<Move> possible = possibleMoves(row,column,dashboard);
 
         return (ArrayList<Move>) possible.stream()
-                .filter(x-> DASHBOARD[x.getToRow()][x.getToColumn()].getColor() == Draught.Color.NONE)
+                .filter(x-> dashboard[x.getToRow()][x.getToColumn()].getColor() == Draught.Color.NONE)
                 .collect(Collectors.toList());
     }
 

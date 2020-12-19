@@ -2,10 +2,7 @@ package game;
 
 import org.json.simple.JSONObject;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.Random;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import org.json.simple.JSONArray;
@@ -50,8 +47,6 @@ public class Game {
     public ArrayList<Integer> getMove() {
         ArrayList<Integer> list = new ArrayList<>();
         ArrayList<Move> allMoves = new ArrayList<>();
-//        list.add(21);
-//        list.add(17);
         ArrayList<Move> captures = new ArrayList<>();
 
         if(isLastMoveMine){
@@ -73,7 +68,10 @@ public class Game {
         }
 
         if(captures.size() > 0){
-            captures.sort(null);
+            for (Move move: captures) {
+                move.setHeuristic(move.getHeuristic()-getPossibleLosses(move.getFrom(), move.getTo()));
+            }
+            captures.sort(Comparator.reverseOrder());
             list.add(captures.get(0).getFrom());
             list.add(captures.get(0).getTo());
 
@@ -88,8 +86,7 @@ public class Game {
                     }
                 }
             }
-            allMoves.sort(null);
-            System.out.println(allMoves);
+            allMoves.sort(Comparator.reverseOrder());
             if(allMoves.size() > 0){
 //                Random rand = new Random();
 //                int n = rand.nextInt(allMoves.size());
@@ -116,9 +113,9 @@ public class Game {
         }
 
         int fromRow, fromColumn, toRow, toColumn;
-        fromRow = from/4;
+        fromRow = from%4==0 ? from/4 - 1 : from/4;
         fromColumn = from%4==0 ? 3 : from%4 - 1;
-        toRow = to/4;
+        toRow = to%4==0 ? to/4 - 1 : to/4;
         toColumn = to%4==0 ? 3 : to%4 - 1;
 
 
@@ -155,7 +152,6 @@ public class Game {
                     && dashboard[move.getToRow()][move.getToColumn()].getColor() != Draught.Color.NONE) {
                 Move toCapture = checkToCapture(move, row, column, dashboard);
                 if(toCapture != null){
-                    toCapture.setHeuristic(toCapture.getHeuristic()-getPossibleLosses(toCapture.getFrom(), toCapture.getTo()));
                     captureMoves.add(toCapture);
                 }
             }

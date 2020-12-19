@@ -41,6 +41,12 @@ public class Main {
          JSONObject info = getGameInfo();
          isFinished = (boolean) info.get("is_finished");
 
+         try{
+            Thread.sleep(5000);
+         }catch(InterruptedException e){
+            System.out.println(e);
+         }
+
          if (myColor.equals(info.get("whose_turn"))){
             JSONParser parser = new JSONParser();
             game.parseBoard((JSONArray) parser.parse(String.valueOf(info.get("board"))));
@@ -70,7 +76,7 @@ public class Main {
 
    public static JSONObject connect() throws ParseException {
       String connectURL = "http://localhost:8081/game?team_name=";
-      String teamName = "Black";
+      String teamName = "red";
       JSONParser parser = new JSONParser();
       JSONObject connectAnswer = connectToGame(connectURL+teamName);
       JSONObject dataConnect = (JSONObject) parser.parse(String.valueOf(connectAnswer.get("data")));

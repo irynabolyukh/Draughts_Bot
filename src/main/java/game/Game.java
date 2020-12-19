@@ -237,8 +237,9 @@ public class Game {
     }
 
     public void parseLastMove(JSONObject last_move) {
-        String player = String.valueOf(last_move.get("player"));
-
-        isLastMoveMine = player.equals(MY_COLOR.toString());
+        if(last_move != null){
+            String player = String.valueOf(last_move.get("player"));
+            isLastMoveMine = player.equals(MY_COLOR.toString());
+        }
     }
 }

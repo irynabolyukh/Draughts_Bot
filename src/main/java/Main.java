@@ -26,13 +26,21 @@ public class Main {
       System.out.println("Color: " + myColor + " & Token: " + myToken);
 
       JSONObject getTime = getGameInfo();
-      double timeForMove = (double) getTime.get("available_time");
-      System.out.println(timeForMove*1000/3);
+      long timeForMove;
+
+      try{
+         timeForMove = (long) getTime.get("available_time");
+      }catch(Exception e){
+         timeForMove = (long) ((double) getTime.get("available_time"));
+      }
+
+      timeForMove = timeForMove*1000/3;
+      System.out.println(timeForMove);
 
       Game game = new Game(myColor);
 
       try{
-         Thread.sleep((long)timeForMove);
+         Thread.sleep(timeForMove);
       }catch(InterruptedException e){
          System.out.println(e);
       }
@@ -68,7 +76,7 @@ public class Main {
          }
 
          try{
-            Thread.sleep((long)timeForMove);
+            Thread.sleep(timeForMove);
          }catch(InterruptedException e){
             System.out.println(e);
          }

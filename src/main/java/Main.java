@@ -32,7 +32,7 @@ public class Main {
       Game game = new Game(myColor);
 
       try{
-         Thread.sleep(1000);
+         Thread.sleep((long)timeForMove);
       }catch(InterruptedException e){
          System.out.println(e);
       }

@@ -85,7 +85,7 @@ public class Main {
 
    public static JSONObject connect(){
       String connectURL = "http://localhost:8081/game?team_name=";
-      String teamName = "red";
+      String teamName = "4Happy2021";
       JSONParser parser = new JSONParser();
       JSONObject connectAnswer = connectToGame(connectURL+teamName);
       try {

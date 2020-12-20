@@ -3,20 +3,10 @@ package game;
 import org.json.simple.JSONObject;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import org.json.simple.JSONArray;
 
 public class Game {
-
-//    Draught[][] DASHBOARD = {{Draught.Color.RED, Draught.RED, Draught.RED, Draught.RED},
-//            {Draught.RED,Draught.RED,Draught.RED, Draught.RED},
-//            {Draught.RED,Draught.RED,Draught.RED, Draught.RED},
-//            {Draught.NONE,Draught.NONE,Draught.NONE, Draught.NONE},
-//            {Draught.NONE,Draught.NONE,Draught.NONE, Draught.NONE},
-//            {Draught.BLACK,Draught.BLACK,Draught.BLACK, Draught.BLACK},
-//            {Draught.BLACK,Draught.BLACK,Draught.BLACK, Draught.BLACK},
-//            {Draught.BLACK,Draught.BLACK,Draught.BLACK, Draught.BLACK}};
 
     Draught[][] DASHBOARD = new Draught[8][4];
 
@@ -102,8 +92,6 @@ public class Game {
             }
             allMoves.sort(Comparator.reverseOrder());
             if(allMoves.size() > 0){
-//                Random rand = new Random();
-//                int n = rand.nextInt(allMoves.size());
                 list.add(allMoves.get(0).getFrom());
                 list.add(allMoves.get(0).getTo());
 
@@ -183,9 +171,6 @@ public class Game {
             if (c == column && row % 2 == 1 && c + 1 < 4 && r + 1 < 8 && dashboard[r + 1][c + 1].getColor() == Draught.Color.NONE) {
                 return new Move(positions[row][column], positions[r + 1][c + 1], 2, r + 1, c + 1);
             }
-//            } else if (r + 1 < 8 && DASHBOARD[r + 1][c].color == Draught.Color.NONE) {
-//                return new Move(positions[row][column], positions[r + 1][c], 2, r + 1, c);
-//            }
             if (c>column && r + 1 < 8 && dashboard[r + 1][c].getColor() == Draught.Color.NONE) {
                 return new Move(positions[row][column], positions[r + 1][c], 2, r + 1, c);
             }if (c<column && r + 1 < 8 && dashboard[r + 1][c].getColor() == Draught.Color.NONE) {
@@ -254,20 +239,16 @@ public class Game {
         return moves;
     }
 
-    public ArrayList<Move> moveWherever(int row, int column, Draught[][] dashboard) {
-        ArrayList<Move> possible = possibleMoves(row,column,dashboard);
-
-        return (ArrayList<Move>) possible.stream()
-                .filter(x-> dashboard[x.getToRow()][x.getToColumn()].getColor() == Draught.Color.NONE)
-                .collect(Collectors.toList());
-    }
-
     public ArrayList<Move> moveWhereverWHeuristic(int row, int column, Draught[][] dashboard) {
         ArrayList<Move> moves = new ArrayList<>();
         ArrayList<Move> possibleMoves = possibleMoves(row, column, dashboard);
         for (Move move : possibleMoves) {
             if (dashboard[move.getToRow()][move.getToColumn()].getColor() == Draught.Color.NONE) {
-                move.setHeuristic(move.getHeuristic()-getPossibleLosses(move.getFrom(), move.getTo()));
+                int to = move.getTo();
+                int toRow = to%4==0 ? to/4 - 1 : to/4;
+                int toColumn = to%4==0 ? 3 : to%4 - 1;
+                ArrayList<Move> possibleCaptures = checkCaptures(toRow, toColumn, dashboard);
+                move.setHeuristic(move.getHeuristic()-getPossibleLosses(move.getFrom(), move.getTo())+possibleCaptures.size());
                 moves.add(move);
             }
         }

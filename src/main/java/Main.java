@@ -25,6 +25,10 @@ public class Main {
       String myToken = String.valueOf(dataConnect.get("token"));
       System.out.println("Color: " + myColor + " & Token: " + myToken);
 
+      JSONObject getTime = getGameInfo();
+      double timeForMove = (double) getTime.get("available_time");
+      System.out.println(timeForMove*1000/3);
+
       Game game = new Game(myColor);
 
       try{
@@ -64,7 +68,7 @@ public class Main {
          }
 
          try{
-            Thread.sleep(1000);
+            Thread.sleep((long)timeForMove);
          }catch(InterruptedException e){
             System.out.println(e);
          }
